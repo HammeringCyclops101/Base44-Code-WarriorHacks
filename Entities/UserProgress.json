@@ -1,0 +1,51 @@
+{
+  "name": "UserProgress",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User's email"
+    },
+    "challenge_id": {
+      "type": "string",
+      "description": "Challenge ID"
+    },
+    "path_id": {
+      "type": "string",
+      "description": "Learning path ID"
+    },
+    "completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether challenge is completed"
+    },
+    "attempts": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of attempts"
+    },
+    "hints_used": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of hints used"
+    },
+    "completion_time": {
+      "type": "number",
+      "description": "Time taken to complete in minutes"
+    },
+    "user_solution": {
+      "type": "string",
+      "description": "User's submitted solution"
+    },
+    "points_earned": {
+      "type": "number",
+      "default": 0,
+      "description": "Points earned from this challenge"
+    }
+  },
+  "required": [
+    "user_email",
+    "challenge_id",
+    "path_id"
+  ]
+}
