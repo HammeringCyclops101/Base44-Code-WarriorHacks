@@ -1,0 +1,63 @@
+
+import React from "react";
+import { Trophy, Calendar, Code } from "lucide-react";
+import { format } from "date-fns";
+
+export default function ProfileHeader({ user, stats }) {
+  const divisionColors = {
+    bronze: "from-amber-600 to-amber-700",
+    silver: "from-gray-400 to-gray-500",
+    gold: "from-yellow-400 to-yellow-600", 
+    platinum: "from-blue-400 to-indigo-500"
+  };
+
+  const divisionGradient = stats ? divisionColors[stats.division] : "from-gray-400 to-gray-500";
+
+  return (
+    <div className="bg-gray-800 rounded-2xl border border-gray-700 p-8 mb-8">
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-6">
+          <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center">
+            <span className="text-white font-bold text-3xl">
+              {user?.full_name?.charAt(0)?.toUpperCase() || '?'}
+            </span>
+          </div>
+          
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              {user?.full_name || 'Anonymous Coder'}
+            </h1>
+            <p className="text-gray-400 mb-4">{user?.email}</p>
+            
+            <div className="flex items-center gap-6 text-sm text-gray-400">
+              <div className="flex items-center gap-1">
+                <Calendar className="w-4 h-4" />
+                Joined {user?.created_date ? format(new Date(user.created_date), 'MMM yyyy') : 'Recently'}
+              </div>
+              {stats?.favorite_language && (
+                <div className="flex items-center gap-1">
+                  <Code className="w-4 h-4" />
+                  Prefers {stats.favorite_language}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {stats && (
+          <div className="text-center">
+            <div className={`px-6 py-3 bg-gradient-to-r ${divisionGradient} text-white rounded-2xl mb-4`}>
+              <div className="flex items-center gap-2">
+                <Trophy className="w-5 h-5" />
+                <span className="font-semibold text-lg capitalize">{stats.division}</span>
+              </div>
+              <p className="text-sm opacity-90">Division</p>
+            </div>
+            <div className="text-3xl font-bold text-white">{stats.total_points}</div>
+            <p className="text-gray-400">Total Points</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
