@@ -1,0 +1,49 @@
+{
+  "name": "LearningPath",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Name of the learning path"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "competitive_programming",
+        "game_development",
+        "ai_ml"
+      ],
+      "description": "Learning path category"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the path"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "description": "Difficulty level"
+    },
+    "total_challenges": {
+      "type": "number",
+      "description": "Total number of challenges in this path"
+    },
+    "estimated_hours": {
+      "type": "number",
+      "description": "Estimated completion time in hours"
+    },
+    "order": {
+      "type": "number",
+      "description": "Display order"
+    }
+  },
+  "required": [
+    "title",
+    "category",
+    "difficulty"
+  ]
+}
