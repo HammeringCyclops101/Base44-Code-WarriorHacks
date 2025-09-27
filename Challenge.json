@@ -1,0 +1,73 @@
+{
+  "name": "Challenge",
+  "type": "object",
+  "properties": {
+    "path_id": {
+      "type": "string",
+      "description": "ID of the learning path this belongs to"
+    },
+    "title": {
+      "type": "string",
+      "description": "Challenge title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed problem description"
+    },
+    "concept": {
+      "type": "string",
+      "description": "Main programming concept being taught"
+    },
+    "difficulty": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Difficulty rating 1-10"
+    },
+    "points": {
+      "type": "number",
+      "description": "Points awarded for completion"
+    },
+    "hints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Progressive hints for the challenge"
+    },
+    "solution_explanation": {
+      "type": "string",
+      "description": "Detailed explanation of the solution"
+    },
+    "example_input": {
+      "type": "string",
+      "description": "Sample input for testing"
+    },
+    "expected_output": {
+      "type": "string",
+      "description": "Expected output for the sample"
+    },
+    "order": {
+      "type": "number",
+      "description": "Order within the learning path"
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "python",
+        "javascript",
+        "cpp",
+        "java"
+      ],
+      "default": "python",
+      "description": "Programming language for this challenge"
+    }
+  },
+  "required": [
+    "path_id",
+    "title",
+    "description",
+    "concept",
+    "points"
+  ]
+}
