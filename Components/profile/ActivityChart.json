@@ -1,0 +1,75 @@
+
+import React from "react";
+import { format, subDays, parseISO } from "date-fns";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+
+export default function ActivityChart({ progress }) {
+  // Generate data for the last 30 days
+  const generateChartData = () => {
+    const data = [];
+    for (let i = 29; i >= 0; i--) {
+      const date = subDays(new Date(), i);
+      const dateStr = format(date, 'yyyy-MM-dd');
+      const dayProgress = progress.filter(p => 
+        p.completed && format(parseISO(p.updated_date), 'yyyy-MM-dd') === dateStr
+      );
+      
+      data.push({
+        date: dateStr,
+        day: format(date, 'MMM d'),
+        challenges: dayProgress.length,
+        points: dayProgress.reduce((sum, p) => sum + (p.points_earned || 0), 0)
+      });
+    }
+    return data;
+  };
+
+  const chartData = generateChartData();
+
+  return (
+    <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-white">Activity (Last 30 Days)</h2>
+        <div className="text-sm text-gray-400">
+          Total: {chartData.reduce((sum, d) => sum + d.challenges, 0)} challenges completed
+        </div>
+      </div>
+      
+      <div className="h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <XAxis 
+              dataKey="day" 
+              axisLine={false}
+              tickLine={false}
+              fontSize={12}
+              textAnchor="middle"
+              tick={{ fill: '#9ca3af' }}
+            />
+            <YAxis 
+              axisLine={false}
+              tickLine={false}
+              fontSize={12}
+              tick={{ fill: '#9ca3af' }}
+            />
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: '#1f2937', 
+                border: '1px solid #374151',
+                borderRadius: '8px',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
+                color: '#ffffff'
+              }}
+              formatter={(value, name) => [value, name === 'challenges' ? 'Challenges' : 'Points']}
+            />
+            <Bar 
+              dataKey="challenges" 
+              fill="#3b82f6" 
+              radius={[4, 4, 0, 0]}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
