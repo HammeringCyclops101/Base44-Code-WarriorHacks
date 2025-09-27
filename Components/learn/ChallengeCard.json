@@ -1,0 +1,123 @@
+
+import React from "react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { 
+  Play, 
+  CheckCircle, 
+  Lock, 
+  Star, 
+  Clock,
+  Trophy,
+  HelpCircle
+} from "lucide-react";
+
+export default function ChallengeCard({ challenge, progress, isLocked, index }) {
+  const isCompleted = progress?.completed;
+  const attempts = progress?.attempts || 0;
+  const hintsUsed = progress?.hints_used || 0;
+
+  const difficultyColor = challenge.difficulty <= 3 
+    ? "text-green-400 bg-green-900"
+    : challenge.difficulty <= 6
+    ? "text-yellow-400 bg-yellow-900" 
+    : "text-red-400 bg-red-900";
+
+  return (
+    <div className={`bg-gray-800 rounded-xl border border-gray-700 transition-all duration-300 ${
+      isLocked 
+        ? "opacity-50" 
+        : "hover:border-blue-500 hover:shadow-lg hover:-translate-y-1"
+    }`}>
+      {isLocked ? (
+        <div className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
+                <Lock className="w-6 h-6 text-gray-500" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-500 mb-1">{challenge.title}</h3>
+                <p className="text-sm text-gray-500">Complete the previous challenge to unlock</p>
+              </div>
+            </div>
+            <div className="text-right text-gray-500">
+              <p className="font-medium">#{index}</p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <Link 
+          to={createPageUrl(`Challenge?id=${challenge.id}`)}
+          className="block p-6"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                isCompleted ? "bg-green-900" : "bg-blue-900"
+              }`}>
+                {isCompleted ? (
+                  <CheckCircle className="w-6 h-6 text-green-400" />
+                ) : (
+                  <Play className="w-6 h-6 text-blue-400" />
+                )}
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-1">{challenge.title}</h3>
+                <p className="text-gray-400 text-sm">{challenge.concept}</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="font-medium text-gray-400">#{index}</p>
+              {isCompleted && (
+                <div className="flex items-center gap-1 mt-1">
+                  <Trophy className="w-4 h-4 text-yellow-400" />
+                  <span className="text-sm font-medium text-yellow-400">
+                    +{challenge.points}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <p className="text-gray-400 mb-4 line-clamp-2">{challenge.description}</p>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className={`px-3 py-1 rounded-full text-sm font-medium ${difficultyColor}`}>
+                <div className="flex items-center gap-1">
+                  <Star className="w-3 h-3" />
+                  {challenge.difficulty}/10
+                </div>
+              </div>
+              <div className="text-sm text-gray-400 flex items-center gap-1">
+                <Trophy className="w-4 h-4" />
+                {challenge.points} points
+              </div>
+              <div className="text-sm text-gray-400 flex items-center gap-1">
+                <span className="font-medium">{challenge.language}</span>
+              </div>
+            </div>
+
+            {progress && (
+              <div className="flex items-center gap-4 text-sm text-gray-400">
+                {attempts > 0 && (
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    {attempts} attempts
+                  </div>
+                )}
+                {hintsUsed > 0 && (
+                  <div className="flex items-center gap-1">
+                    <HelpCircle className="w-4 h-4" />
+                    {hintsUsed} hints
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </Link>
+      )}
+    </div>
+  );
+}
