@@ -1,0 +1,119 @@
+
+import React, { useState } from "react";
+import { format, parseISO } from "date-fns";
+import { 
+  Calendar, 
+  Users, 
+  Trophy, 
+  Clock,
+  UserPlus,
+  UserMinus
+} from "lucide-react";
+import { Tournament } from "@/entities/all";
+
+export default function TournamentCard({ tournament, currentUser, onUpdate }) {
+  const [isJoining, setIsJoining] = useState(false);
+  const isParticipant = tournament.participants?.includes(currentUser?.email);
+  const canJoin = tournament.max_participants ? tournament.participants?.length < tournament.max_participants : true;
+
+  const handleJoinToggle = async () => {
+    setIsJoining(true);
+    try {
+      const updatedParticipants = isParticipant
+        ? tournament.participants.filter(email => email !== currentUser.email)
+        : [...(tournament.participants || []), currentUser.email];
+
+      await Tournament.update(tournament.id, {
+        participants: updatedParticipants
+      });
+      await onUpdate();
+    } catch (error) {
+      console.error('Error updating tournament:', error);
+    } finally {
+      setIsJoining(false);
+    }
+  };
+
+  const statusColors = {
+    upcoming: "bg-blue-900 text-blue-300 border-blue-700",
+    active: "bg-green-900 text-green-300 border-green-700", 
+    completed: "bg-gray-700 text-gray-300 border-gray-600"
+  };
+
+  return (
+    <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 hover:shadow-lg transition-all duration-300">
+      <div className="flex items-start justify-between mb-4">
+        <div>
+          <h3 className="text-xl font-bold text-white mb-2">{tournament.title}</h3>
+          <p className="text-gray-400 text-sm mb-3">{tournament.description}</p>
+        </div>
+        <span className={`px-3 py-1 rounded-full text-sm font-medium border ${statusColors[tournament.status]}`}>
+          {tournament.status}
+        </span>
+      </div>
+
+      <div className="space-y-3 mb-6">
+        <div className="flex items-center gap-3 text-sm text-gray-400">
+          <Calendar className="w-4 h-4" />
+          <span>
+            {format(parseISO(tournament.start_date), 'MMM d, yyyy h:mm a')} - {format(parseISO(tournament.end_date), 'MMM d, yyyy h:mm a')}
+          </span>
+        </div>
+        
+        <div className="flex items-center gap-3 text-sm text-gray-400">
+          <Users className="w-4 h-4" />
+          <span>
+            {tournament.participants?.length || 0} participants
+            {tournament.max_participants && ` (max ${tournament.max_participants})`}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3 text-sm text-gray-400">
+          <Trophy className="w-4 h-4" />
+          <span>{tournament.challenge_ids?.length || 0} challenges</span>
+        </div>
+
+        {tournament.prize_description && (
+          <div className="flex items-center gap-3 text-sm text-gray-400">
+            <span className="font-medium">🏆 {tournament.prize_description}</span>
+          </div>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-gray-500">
+          Created by {tournament.created_by === currentUser?.email ? 'You' : 'Another coder'}
+        </div>
+
+        {tournament.status === 'upcoming' && (
+          <button
+            onClick={handleJoinToggle}
+            disabled={isJoining || (!isParticipant && !canJoin)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+              isParticipant
+                ? "bg-red-900 text-red-300 hover:bg-red-800 border border-red-700"
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            } ${(!canJoin && !isParticipant) ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {isJoining ? (
+              <>
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                Loading...
+              </>
+            ) : isParticipant ? (
+              <>
+                <UserMinus className="w-4 h-4" />
+                Leave
+              </>
+            ) : (
+              <>
+                <UserPlus className="w-4 h-4" />
+                {canJoin ? 'Join' : 'Full'}
+              </>
+            )}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
