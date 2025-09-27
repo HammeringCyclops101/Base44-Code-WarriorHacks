@@ -1,0 +1,58 @@
+
+import React from "react";
+import { Code2, Gamepad2, Brain, Trophy, Target, Clock } from "lucide-react";
+
+export default function PathHeader({ path, progress, totalChallenges }) {
+  const icons = {
+    competitive_programming: Code2,
+    game_development: Gamepad2,
+    ai_ml: Brain
+  };
+  
+  const Icon = icons[path.category];
+  const completedChallenges = progress.filter(p => p.completed).length;
+  const progressPercentage = totalChallenges > 0 
+    ? Math.round((completedChallenges / totalChallenges) * 100) 
+    : 0;
+
+  const difficultyColors = {
+    beginner: "bg-green-900 text-green-300 border-green-700",
+    intermediate: "bg-yellow-900 text-yellow-300 border-yellow-700",
+    advanced: "bg-red-900 text-red-300 border-red-700"
+  };
+
+  return (
+    <div className="bg-gray-800 rounded-2xl border border-gray-700 p-8 mb-8">
+      <div className="flex items-start justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-gray-700 rounded-2xl flex items-center justify-center">
+            <Icon className="w-8 h-8 text-blue-400" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">{path.title}</h1>
+            <p className="text-gray-400">{path.description}</p>
+          </div>
+        </div>
+        <span className={`px-4 py-2 rounded-full text-sm font-medium border ${difficultyColors[path.difficulty]}`}>
+          {path.difficulty}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-2 text-2xl font-bold text-white mb-1">
+            <Target className="w-6 h-6 text-blue-400" />
+            {completedChallenges}/{totalChallenges}
+          </div>
+          <p className="text-sm text-gray-400">Challenges</p>
+        </div>
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-2 text-2xl font-bold text-white mb-1">
+            <Clock className="w-6 h-6 text-green-400" />
+            {path.estimated_hours || 0}h
+          </div>
+          <p className="text-sm text-gray-400">Est. Time</p>
+        </div>
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-2 text-2xl font-bold text-white mb-1">
+            <Trophy className="w-6 h-6 text-yellow-400" />
