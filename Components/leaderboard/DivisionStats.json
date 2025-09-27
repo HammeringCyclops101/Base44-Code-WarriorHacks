@@ -1,0 +1,40 @@
+
+import React from "react";
+
+export default function DivisionStats({ counts, selectedDivision, onDivisionSelect }) {
+  const divisions = [
+    { key: "all", name: "All", color: "bg-gray-700 text-gray-300 border-gray-600" },
+    { key: "bronze", name: "Bronze", color: "bg-amber-900 text-amber-300 border-amber-700" },
+    { key: "silver", name: "Silver", color: "bg-gray-600 text-gray-200 border-gray-500" },
+    { key: "gold", name: "Gold", color: "bg-yellow-900 text-yellow-300 border-yellow-700" },
+    { key: "platinum", name: "Platinum", color: "bg-blue-900 text-blue-300 border-blue-700" },
+  ];
+
+  const getCount = (key) => {
+    if (key === "all") {
+      return Object.values(counts).reduce((sum, count) => sum + count, 0);
+    }
+    return counts[key] || 0;
+  };
+
+  return (
+    <div className="flex flex-wrap gap-3 mb-8 justify-center">
+      {divisions.map((division) => (
+        <button
+          key={division.key}
+          onClick={() => onDivisionSelect(division.key)}
+          className={`px-6 py-3 rounded-xl border-2 font-medium transition-all duration-200 ${
+            selectedDivision === division.key
+              ? `${division.color} shadow-lg scale-105`
+              : `${division.color} hover:shadow-md hover:scale-102 opacity-70`
+          }`}
+        >
+          <div className="text-center">
+            <p className="text-lg font-bold">{getCount(division.key)}</p>
+            <p className="text-sm">{division.name}</p>
+          </div>
+        </button>
+      ))}
+    </div>
+  );
+}
